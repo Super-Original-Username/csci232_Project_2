@@ -1,0 +1,9 @@
+insert 40,50,30,20,60,35,45,47,90,90
+find 35
+delete 50
+traverse 1
+traverse 2
+traverse 3
+min
+max
+show
