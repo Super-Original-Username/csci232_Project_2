@@ -21,13 +21,15 @@ class Node {
     public double dData;        // data item
     public Node leftChild;      // this Node's left child
     public Node rightChild;     // this Node's right child
-    public int balance;         // The balance of the tree as seen by this node
+    public int height;         // The balance of the tree as seen by this node
+    public int balance;
 
     public Node(int id, double dd) {
         iData = id;
         dData = dd;
         rightChild = null;
         leftChild = null;
+        height = 0;
     }
 
     public void displayNode() { // display ourself
@@ -89,34 +91,37 @@ class Tree {
             return current;
         } else if (id < current.iData) {
             current.leftChild = insert(current.leftChild, id, dd); // Recursive call for left child
+            current.height++;
         } else {
             current.rightChild = insert(current.rightChild, id, dd); // Recursive call for right child
+            current.height++;
         }
-        current.balance = checkBalance(current,current);
-        switch(current.balance){
+        if(current.rightChild != null && current.leftChild!=null)
+            current.balance = current.leftChild.height - current.rightChild.height;
+        switch (current.balance) {
             case 2:
-                if(current.rightChild.balance == 1)
+                if (current.rightChild.balance == 1)
                     current.rightChild = rotateLeft(current.rightChild);
-                else if(current.rightChild.balance == -1){
+                else if (current.rightChild.balance == -1) {
                     current.rightChild = rotateRight(current.rightChild);
                     current = rotateLeft(current);
                 }
                 break;
             case -2:
-                if(current.leftChild.balance == -1)
+                if (current.leftChild.balance == -1)
                     current.leftChild = rotateRight(current.leftChild);
-                if(current.leftChild.balance == 1){
+                if (current.leftChild.balance == 1) {
 
                 }
         }
         return current;
     }
 
-    public Node rotateLeft(Node toRotate){
+    public Node rotateLeft(Node toRotate) {
         Node GP = toRotate;
         Node pivot = toRotate.rightChild;
         Node temp = null;
-        if(pivot.leftChild!=null) {
+        if (pivot.leftChild != null) {
             temp = pivot.leftChild;
             pivot.leftChild = null;
         }
@@ -125,11 +130,11 @@ class Tree {
         return pivot;
     }
 
-    public Node rotateRight(Node toRotate){
+    public Node rotateRight(Node toRotate) {
         Node GP = toRotate;
         Node pivot = toRotate.leftChild;
         Node temp = null;
-        if(pivot.rightChild!=null){
+        if (pivot.rightChild != null) {
             temp = pivot.rightChild;
             pivot.rightChild = null;
         }
@@ -143,12 +148,12 @@ class Tree {
         root = insert(root, id, dd); // Calls new recursive insert method
     } // end insert()
 
-    public int checkBalance(Node cur, Node par) {
-        if(cur==null)
+    /*public int checkBalance(Node cur, Node par) {
+        if (cur == null)
             return -1;
         else
             return Math.max(checkBalance(cur.leftChild, cur), checkBalance(cur.rightChild, cur)) + 1;
-    }
+    }*/
 
     public boolean delete(Node cur, Node par, int key, boolean isLeft) {
         boolean found = false;
