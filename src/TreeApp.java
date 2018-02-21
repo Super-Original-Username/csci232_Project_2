@@ -73,10 +73,10 @@ class Tree {
         if (n == null)
             return 0;
         else
-            return n.height;
+            return 1 + max(getHeight(n.leftChild), getHeight(n.rightChild));
     }
 
-    int max(int a, int b) {
+    public static int max(int a, int b) {
         return (a > b) ? a : b;
     }
 
@@ -173,17 +173,22 @@ class Tree {
             return Math.max(checkBalance(cur.leftChild, cur), checkBalance(cur.rightChild, cur)) + 1;
     }*/
 
-
-
+    // @TODO Figure out how to add the newly rotated current node back to whichever side of its parent it belongs to
     public Boolean delete(Node cur, Node par, int key, boolean isLeft) {
         boolean found = false;
         if (cur.iData != key) {
             if (key < cur.iData) {
                 isLeft = true;
                 delete(cur.leftChild, cur, key, isLeft); // Recursive delete call for left child
+                cur.height = 1 + max(getHeight(cur.leftChild), getHeight(cur.rightChild));
+                cur.balance = checkBalance(cur);
+                cur = doRotations(cur);
             } else {
                 isLeft = false;
                 delete(cur.rightChild, cur, key, isLeft); // Recursive delete call for right child
+                cur.height = 1 + max(getHeight(cur.leftChild), getHeight(cur.rightChild));
+                cur.balance = checkBalance(cur);
+                cur = doRotations(cur);
             }
             if (cur == null) // Returns false if the current node doesn't exist
                 return false;
@@ -223,10 +228,9 @@ class Tree {
 
                 successor.leftChild = cur.leftChild;
             }
+            par.height -= 1;
         }
-        cur.height = 1 + max(getHeight(cur.leftChild), getHeight(cur.rightChild));
-        cur.balance = checkBalance(cur);
-        cur = doRotations(cur);
+        root = root;
         return true;
     }
 
