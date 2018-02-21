@@ -108,27 +108,35 @@ class Tree {
         }
         current.height = 1 + max(getHeight(current.leftChild), getHeight(current.rightChild));
         if (current != null)
-            current.balance = getHeight(current.rightChild) - getHeight(current.leftChild);
-        switch (current.balance) {
-            case 2:
-                if (current.rightChild.balance == 1)
-                    return rotateLeft(current);
-                else if (current.rightChild.balance == -1) {
-                    current.rightChild = rotateRight(current.rightChild);
-                    return rotateLeft(current);
-                }
-                break;
-            case -2:
-                if (current.leftChild.balance == -1)
-                    return rotateRight(current);
-                if (current.leftChild.balance == 1) {
-                    current.leftChild = rotateLeft(current.leftChild);
-                    return rotateRight(current);
-                }
-        }
+            current.balance = checkBalance(current);
+        current = doRotations(current);
         return current;
     }
 
+    public int checkBalance(Node c){
+        return getHeight(c.rightChild) - getHeight(c.leftChild);
+    }
+
+    public Node doRotations(Node c) {
+        Node toReturn = null;
+        if (c.balance == 2) {
+            if (c.rightChild.balance == 1)
+                toReturn = rotateLeft(c);
+            else if (c.rightChild.balance == -1) {
+                c.rightChild = rotateRight(c.rightChild);
+                toReturn = rotateLeft(c);
+            }
+        } else if (c.balance == -2) {
+            if (c.leftChild.balance == -1)
+                toReturn = rotateRight(c);
+            if (c.leftChild.balance == 1) {
+                c.leftChild = rotateLeft(c.leftChild);
+                toReturn = rotateRight(c);
+            }
+        } else
+            toReturn = c;
+        return toReturn;
+    }
 
     public Node rotateLeft(Node GP) {
         Node pivot = GP.rightChild;
