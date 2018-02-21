@@ -182,13 +182,25 @@ class Tree {
                 delete(cur.leftChild, cur, key, isLeft); // Recursive delete call for left child
                 cur.height = 1 + max(getHeight(cur.leftChild), getHeight(cur.rightChild));
                 cur.balance = checkBalance(cur);
-                cur = doRotations(cur);
+                if(cur.balance == -2 || cur.balance == 2){
+                    cur = doRotations(cur);
+                    if (cur.iData > par.iData)
+                        par.rightChild = cur;
+                    else
+                        par.leftChild = cur;
+                }
             } else {
                 isLeft = false;
                 delete(cur.rightChild, cur, key, isLeft); // Recursive delete call for right child
                 cur.height = 1 + max(getHeight(cur.leftChild), getHeight(cur.rightChild));
                 cur.balance = checkBalance(cur);
-                cur = doRotations(cur);
+                if(cur.balance == -2 || cur.balance == 2){
+                    cur = doRotations(cur);
+                    if (cur.iData > par.iData)
+                        par.rightChild = cur;
+                    else
+                        par.leftChild = cur;
+                }
             }
             if (cur == null) // Returns false if the current node doesn't exist
                 return false;
@@ -228,9 +240,8 @@ class Tree {
 
                 successor.leftChild = cur.leftChild;
             }
-            par.height -= 1;
         }
-        root = root;
+
         return true;
     }
 
