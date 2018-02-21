@@ -113,23 +113,23 @@ class Tree {
         return current;
     }
 
-    public int checkBalance(Node c){
+    public int checkBalance(Node c) { // Checks the balance of the current node
         return getHeight(c.rightChild) - getHeight(c.leftChild);
     }
 
-    public Node doRotations(Node c) {
+    public Node doRotations(Node c) { // Determines what type of rotation(s) to do for the current node based on its balance
         Node toReturn = null;
         if (c.balance == 2) {
-            if (c.rightChild.balance == 1)
+            if (c.rightChild.balance == 1) // Right Right case
                 toReturn = rotateLeft(c);
-            else if (c.rightChild.balance == -1) {
+            else if (c.rightChild.balance == -1) { // Right Left case
                 c.rightChild = rotateRight(c.rightChild);
                 toReturn = rotateLeft(c);
             }
         } else if (c.balance == -2) {
-            if (c.leftChild.balance == -1)
+            if (c.leftChild.balance == -1) // Left Left case
                 toReturn = rotateRight(c);
-            if (c.leftChild.balance == 1) {
+            if (c.leftChild.balance == 1) { // Left Right case
                 c.leftChild = rotateLeft(c.leftChild);
                 toReturn = rotateRight(c);
             }
@@ -138,7 +138,7 @@ class Tree {
         return toReturn;
     }
 
-    public Node rotateLeft(Node GP) {
+    public Node rotateLeft(Node GP) { // Takes in the nod eto be rotated, does the rotation, then returns the new grandparent node
         Node pivot = GP.rightChild;
         Node temp = pivot.leftChild;
         pivot.leftChild = GP;
@@ -148,7 +148,7 @@ class Tree {
         return pivot;
     }
 
-    public Node rotateRight(Node GP) {
+    public Node rotateRight(Node GP) { // Takes in the node to be rotated, does the rotation, then returns the new grandparent node
         Node pivot = GP.leftChild;
         Node temp = pivot.rightChild;
         pivot.rightChild = GP;
@@ -173,43 +173,45 @@ class Tree {
             return Math.max(checkBalance(cur.leftChild, cur), checkBalance(cur.rightChild, cur)) + 1;
     }*/
 
-    public boolean delete(Node cur, Node par, int key, boolean isLeft) {
+
+
+    public Boolean delete(Node cur, Node par, int key, boolean isLeft) {
         boolean found = false;
         if (cur.iData != key) {
             if (key < cur.iData) {
                 isLeft = true;
-                delete(cur.leftChild, cur, key, isLeft);
+                delete(cur.leftChild, cur, key, isLeft); // Recursive delete call for left child
             } else {
                 isLeft = false;
-                delete(cur.rightChild, cur, key, isLeft);
+                delete(cur.rightChild, cur, key, isLeft); // Recursive delete call for right child
             }
-            if (cur == null)
+            if (cur == null) // Returns false if the current node doesn't exist
                 return false;
         } else
-            found = true;
+            found = true; // Does this if the node with the matching key has been found
         if (found == true) {
-            if (cur.leftChild == null && cur.rightChild == null) {
+            if (cur.leftChild == null && cur.rightChild == null) { // Case where the node to be deleted has no children
                 if (cur == root)
                     root = null;
                 else if (isLeft)
                     par.leftChild = null;
                 else
                     par.rightChild = null;
-            } else if (cur.rightChild == null) {
+            } else if (cur.rightChild == null) { // The node to be deleted has a left child, but not a right child
                 if (cur == root)
                     root = cur.leftChild;
                 else if (isLeft)
                     par.leftChild = cur.leftChild;
                 else
                     par.rightChild = cur.rightChild;
-            } else if (cur.leftChild == null) {
+            } else if (cur.leftChild == null) { // The node to be deleted doesn't have a left child node
                 if (cur == root)
                     root = cur.rightChild;
                 else if (isLeft)
                     par.leftChild = cur.rightChild;
                 else
                     par.rightChild = cur.rightChild;
-            } else {
+            } else {                    // The node to be deleted has two child nodes
                 Node successor = getSuccessor(cur);
 
                 if (cur == root)
@@ -222,6 +224,9 @@ class Tree {
                 successor.leftChild = cur.leftChild;
             }
         }
+        cur.height = 1 + max(getHeight(cur.leftChild), getHeight(cur.rightChild));
+        cur.balance = checkBalance(cur);
+        cur = doRotations(cur);
         return true;
     }
 
