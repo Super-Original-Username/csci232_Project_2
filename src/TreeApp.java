@@ -32,6 +32,7 @@ class Node {
         height = 0;
     }
 
+
     public void displayNode() { // display ourself
         System.out.print('{');
         System.out.print(iData);
@@ -68,6 +69,17 @@ class Tree {
         System.out.println();
     }
 
+    public static int getHeight(Node n) {
+        if (n == null)
+            return 0;
+        else
+            return n.height;
+    }
+
+    int max(int a, int b) {
+        return (a > b) ? a : b;
+    }
+
 
     public Node find(int key) {      // find node with given key
         Node current = root;         // (assumes non-empty tree)
@@ -91,61 +103,59 @@ class Tree {
             return current;
         } else if (id < current.iData) {
             current.leftChild = insert(current.leftChild, id, dd); // Recursive call for left child
-            current.height++;
         } else {
             current.rightChild = insert(current.rightChild, id, dd); // Recursive call for right child
-            current.height++;
         }
-        if(current.rightChild != null && current.leftChild!=null)
-            current.balance = current.leftChild.height - current.rightChild.height;
+        current.height = 1 + max(getHeight(current.leftChild), getHeight(current.rightChild));
+        if (current != null)
+            current.balance = getHeight(current.rightChild) - getHeight(current.leftChild);
         switch (current.balance) {
             case 2:
                 if (current.rightChild.balance == 1)
-                    current.rightChild = rotateLeft(current.rightChild);
+                    return rotateLeft(current);
                 else if (current.rightChild.balance == -1) {
                     current.rightChild = rotateRight(current.rightChild);
-                    current = rotateLeft(current);
+                    return rotateLeft(current);
                 }
                 break;
             case -2:
                 if (current.leftChild.balance == -1)
-                    current.leftChild = rotateRight(current.leftChild);
+                    return rotateRight(current);
                 if (current.leftChild.balance == 1) {
-
+                    current.leftChild = rotateLeft(current.leftChild);
+                    return rotateRight(current);
                 }
         }
         return current;
     }
 
-    public Node rotateLeft(Node toRotate) {
-        Node GP = toRotate;
-        Node pivot = toRotate.rightChild;
-        Node temp = null;
-        if (pivot.leftChild != null) {
-            temp = pivot.leftChild;
-            pivot.leftChild = null;
-        }
-        GP = pivot.leftChild;
+
+    public Node rotateLeft(Node GP) {
+        Node pivot = GP.rightChild;
+        Node temp = pivot.leftChild;
+        pivot.leftChild = GP;
         GP.rightChild = temp;
+        GP.height = 1 + max(getHeight(GP.leftChild), getHeight(GP.rightChild));
+        pivot.height = 1 + max(getHeight(pivot.leftChild), getHeight(pivot.rightChild));
         return pivot;
     }
 
-    public Node rotateRight(Node toRotate) {
-        Node GP = toRotate;
-        Node pivot = toRotate.leftChild;
-        Node temp = null;
-        if (pivot.rightChild != null) {
-            temp = pivot.rightChild;
-            pivot.rightChild = null;
-        }
-        GP = pivot.leftChild;
+    public Node rotateRight(Node GP) {
+        Node pivot = GP.leftChild;
+        Node temp = pivot.rightChild;
+        pivot.rightChild = GP;
         GP.leftChild = temp;
+        GP.height = 1 + max(getHeight(GP.leftChild), getHeight(GP.rightChild));
+        pivot.height = 1 + max(getHeight(pivot.leftChild), getHeight(pivot.rightChild));
         return pivot;
     }
 
 
     public void insert(int id, double dd) {
         root = insert(root, id, dd); // Calls new recursive insert method
+        System.out.println();
+        displayTree(); //Shows the tree after every insertion, for debugging purposes
+        System.out.println();
     } // end insert()
 
     /*public int checkBalance(Node cur, Node par) {
