@@ -120,16 +120,16 @@ class Tree {
     public Node doRotations(Node c) { // Determines what type of rotation(s) to do for the current node based on its balance
         Node toReturn = null;
         if (c.balance == 2) {
-            if (c.rightChild.balance == 1) // Right Right case
+            if (checkBalance(c.rightChild) >= 1) // Right Right case
                 toReturn = rotateLeft(c);
-            else if (c.rightChild.balance == -1) { // Right Left case
+            else if (checkBalance(c.rightChild) < -1) { // Right Left case
                 c.rightChild = rotateRight(c.rightChild);
                 toReturn = rotateLeft(c);
             }
         } else if (c.balance == -2) {
-            if (c.leftChild.balance == -1) // Left Left case
+            if (checkBalance(c.leftChild) <= 0) // Left Left case
                 toReturn = rotateRight(c);
-            if (c.leftChild.balance == 1) { // Left Right case
+            if (checkBalance(c.leftChild) > 0) { // Left Right case
                 c.leftChild = rotateLeft(c.leftChild);
                 toReturn = rotateRight(c);
             }
@@ -137,6 +137,7 @@ class Tree {
             toReturn = c;
         return toReturn;
     }
+
 
     public Node rotateLeft(Node GP) { // Takes in the nod eto be rotated, does the rotation, then returns the new grandparent node
         Node pivot = GP.rightChild;
@@ -221,13 +222,15 @@ class Tree {
         cur.height = 1 + max(getHeight(cur.leftChild), getHeight(cur.rightChild));
         cur.balance = checkBalance(cur);
         if (cur.balance == -2 || cur.balance == 2) {
-            cur.rightChild.balance = checkBalance(cur.rightChild);
-            cur.leftChild.balance = checkBalance(cur.leftChild);
-            cur = doRotations(cur);
-            if (cur.iData > par.iData)
-                par.rightChild = cur;
-            else
-                par.leftChild = cur;
+            if (cur == par)
+                root = doRotations(cur);
+            else {
+                cur = doRotations(cur);
+                if (cur.iData > par.iData)
+                    par.rightChild = cur;
+                else
+                    par.leftChild = cur;
+            }
         }
         return true;
     }
