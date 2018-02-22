@@ -133,7 +133,7 @@ class Tree {
                 c.leftChild = rotateLeft(c.leftChild);
                 toReturn = rotateRight(c);
             }
-        }else
+        } else
             toReturn = c;
         return toReturn;
     }
@@ -166,12 +166,6 @@ class Tree {
         System.out.println();
     } // end insert()
 
-    /*public int checkBalance(Node cur, Node par) {
-        if (cur == null)
-            return -1;
-        else
-            return Math.max(checkBalance(cur.leftChild, cur), checkBalance(cur.rightChild, cur)) + 1;
-    }*/
 
     // @TODO Figure out how to add the newly rotated current node back to whichever side of its parent it belongs to
     public Boolean delete(Node cur, Node par, int key, boolean isLeft) {
@@ -180,28 +174,11 @@ class Tree {
             if (key < cur.iData) {
                 isLeft = true;
                 delete(cur.leftChild, cur, key, isLeft); // Recursive delete call for left child
-                cur.height = 1 + max(getHeight(cur.leftChild), getHeight(cur.rightChild));
-                cur.balance = checkBalance(cur);
-                if(cur.balance == -2 || cur.balance == 2){
-                    cur = doRotations(cur);
-                    if ((cur.iData > par.iData))
-                        par.rightChild = cur;
-                    else
-                        par.leftChild = cur;
-                }
-            } else {
+            } else if (key > cur.iData) {
                 isLeft = false;
                 delete(cur.rightChild, cur, key, isLeft); // Recursive delete call for right child
-                cur.height = 1 + max(getHeight(cur.leftChild), getHeight(cur.rightChild));
-                cur.balance = checkBalance(cur);
-                if(cur.balance == -2 || cur.balance == 2){
-                    cur = doRotations(cur);
-                    if ((cur.iData > par.iData))
-                        par.rightChild = cur;
-                    else
-                        par.leftChild = cur;
-                }
             }
+
             if (cur == null) // Returns false if the current node doesn't exist
                 return false;
         } else
@@ -241,7 +218,17 @@ class Tree {
                 successor.leftChild = cur.leftChild;
             }
         }
-
+        cur.height = 1 + max(getHeight(cur.leftChild), getHeight(cur.rightChild));
+        cur.balance = checkBalance(cur);
+        if (cur.balance == -2 || cur.balance == 2) {
+            cur.rightChild.balance = checkBalance(cur.rightChild);
+            cur.leftChild.balance = checkBalance(cur.leftChild);
+            cur = doRotations(cur);
+            if (cur.iData > par.iData)
+                par.rightChild = cur;
+            else
+                par.leftChild = cur;
+        }
         return true;
     }
 
