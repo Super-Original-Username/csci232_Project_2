@@ -1,8 +1,8 @@
 /*
-    Author: Ethan Fison
+    Author: Ethan Fison, Alex Salois, and Zan Rost-Montieth, but mostly Ethan
         modified from the treeApp program provided on the course webpage
-    Date: 2/9/18
-    Overview: Reads in a file and performs actions to a binary tree based on the inputs from the file
+    Date: 2/21/18
+    Overview: Reads in a file and builds/balances an avl tree based on inputs from the file
  */
 
 import java.io.BufferedReader;
@@ -108,7 +108,7 @@ class Tree {
         }
         current.height = 1 + max(getHeight(current.leftChild), getHeight(current.rightChild));
         if (current != null)
-            current.balance = checkBalance(current);
+            current.balance = checkBalance(current); // Checks the balance of the node before feeding it into the rotation method
         current = doRotations(current);
         return current;
     }
@@ -119,10 +119,10 @@ class Tree {
 
     public Node doRotations(Node c) { // Determines what type of rotation(s) to do for the current node based on its balance
         Node toReturn = null;
-        if (c.balance == 2) {
-            if (checkBalance(c.rightChild) >= 1) // Right Right case
+        if (c.balance == 2) { // These checks initially checked for 1s, but checking for greater/less than/equal to 0 works better for delete rotations
+            if (checkBalance(c.rightChild) >= 0) // Right Right case
                 toReturn = rotateLeft(c);
-            else if (checkBalance(c.rightChild) < -1) { // Right Left case
+            else if (checkBalance(c.rightChild) < 0) { // Right Left case
                 c.rightChild = rotateRight(c.rightChild);
                 toReturn = rotateLeft(c);
             }
@@ -222,9 +222,9 @@ class Tree {
         cur.height = 1 + max(getHeight(cur.leftChild), getHeight(cur.rightChild));
         cur.balance = checkBalance(cur);
         if (cur.balance == -2 || cur.balance == 2) {
-            if (cur == par)
-                root = doRotations(cur);
-            else {
+            if (cur == par)     // This accounts for the case where the current node is also the parent node (basically
+                root = doRotations(cur); // when the root is the parent and current, allowing rotations to stick
+            else {          // If the current is not also the root, then does rotation as usual
                 cur = doRotations(cur);
                 if (cur.iData > par.iData)
                     par.rightChild = cur;
