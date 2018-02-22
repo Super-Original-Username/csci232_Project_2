@@ -133,7 +133,7 @@ class Tree {
                 c.leftChild = rotateLeft(c.leftChild);
                 toReturn = rotateRight(c);
             }
-        } else
+        }else
             toReturn = c;
         return toReturn;
     }
@@ -184,7 +184,7 @@ class Tree {
                 cur.balance = checkBalance(cur);
                 if(cur.balance == -2 || cur.balance == 2){
                     cur = doRotations(cur);
-                    if (cur.iData > par.iData)
+                    if ((cur.iData > par.iData))
                         par.rightChild = cur;
                     else
                         par.leftChild = cur;
@@ -196,7 +196,7 @@ class Tree {
                 cur.balance = checkBalance(cur);
                 if(cur.balance == -2 || cur.balance == 2){
                     cur = doRotations(cur);
-                    if (cur.iData > par.iData)
+                    if ((cur.iData > par.iData))
                         par.rightChild = cur;
                     else
                         par.leftChild = cur;
@@ -220,7 +220,7 @@ class Tree {
                 else if (isLeft)
                     par.leftChild = cur.leftChild;
                 else
-                    par.rightChild = cur.rightChild;
+                    par.rightChild = cur.leftChild;
             } else if (cur.leftChild == null) { // The node to be deleted doesn't have a left child node
                 if (cur == root)
                     root = cur.rightChild;
