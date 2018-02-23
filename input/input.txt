@@ -1,13 +1,12 @@
-insert 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
-delete 9
+insert 47,16,68,15,62,72,70,73,71
+find 73
+traverse 1
+traverse 2
+traverse 3
+min
+max
 show
-delete 10
-show
-delete 13
-show
-delete 14
-show
-delete 15
-show
-delete 12
+delete 62
+delete 71
+delete 68
 show
